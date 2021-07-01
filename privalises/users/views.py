@@ -16,6 +16,10 @@ def register(request):
     if request.method == 'POST':
        form = UserRegister(request.POST)
        if form.is_valid():
+           form.username = request.POST.get('username')
+           form.email = request.POST.get('email')
+           form.password1 = request.POST.get('password1')
+           form.password2 = request.POST.get('password2')
            form.save()
            username = form.cleaned_data.get('username')
            messages.success(request, f'account created for {username}')
