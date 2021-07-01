@@ -1,12 +1,8 @@
 from django import forms
 from django.forms.widgets import Widget
-from .models import Profile, Comment, Post
+from .models import Profile, Comment, Reply
 from django.contrib.auth.models import User
-#class ShareForm(forms.form):
-#    body = forms.CharField(label='', widget=forms.Textarea(attrs={
-#         'rows': '3',
-#         'placeholder': 'say something..'
-#        }))
+
 class ProfileUpdteForm(forms.ModelForm):
     class Meta:
         model = Profile
@@ -24,9 +20,13 @@ class UserUpdateForm(forms.ModelForm):
         model = User
         fields = ['username', 'email']
 
-class PostForm(forms.ModelForm):
-    image = forms.ImageField(required=False)
+#class commentform(forms.ModelForm):
+#    comment = forms.CharField(label='', widget=forms.Textarea(attrs={'rows': '3', 'placeholder': 'Say Something'}))
+#    class Meta:
+#        model = Comment
+#        fields = ['comment']
 
-    class Meta:
-        model = Post
-        fields = ['content', 'image']
+#class ReplyForm(forms.ModelForm):
+#    class Meta:
+#        model = Reply
+#        fields = ['reply']

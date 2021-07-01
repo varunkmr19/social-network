@@ -1,10 +1,11 @@
 from django.urls import path
 #from django.conf import settings
 #from django.conf.urls.static import static
-from .views import AddLike, AddDislike, Search, AddCommentLike, AddCommentDislike, CommentReply, ProfileView, settings, AddFollower, RemoveFollower,PostListView, PostDetailView, PostUpdateView, PostDeleteView, CommentDeleteView
+from .views import AddLike, AddDislike, ProfileView, settings, AddFollower, RemoveFollower,PostListView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView, CommentDeleteView
 urlpatterns = [
     path('', PostListView.as_view(), name='home'),
     path('post/<int:pk>/', PostDetailView, name='post-detail'),
+    path('post/new/', PostCreateView.as_view(), name='post-create'),
     path('post/<int:pk>/update/', PostUpdateView.as_view(), name='post-update'),
     path('profile/settings', settings, name='profile-update'),
     path('post/<int:pk>/delete', PostDeleteView.as_view(), name='post-delete'),
@@ -13,11 +14,7 @@ urlpatterns = [
     path('profile/remove/follower/<int:pk>', RemoveFollower.as_view(), name='remove-follower'),
     path('profile/add/follower/<int:pk>', AddFollower.as_view(), name='add-follower'),
     path('post/add/like/<int:pk>', AddLike.as_view(), name='add-like'),
-    path('post/remove/comment/like/<int:post_pk>/<int:pk>', AddCommentLike.as_view(), name='add-comment-like'),
-    path('post/add/comment/like/<int:post_pk>/<int:pk>', AddCommentDislike.as_view(), name='add-comment-dislike'),
-    path('post/add/comment/reply/<int:post_pk>/<int:pk>', CommentReply.as_view(), name='add-comment-reply'),
     path('post/remove/like/<int:pk>', AddDislike.as_view(), name='add-dislike'),
-    path('search/', Search.as_view(), name='search'),
 
 ]
 

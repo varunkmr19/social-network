@@ -9,7 +9,6 @@ from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from .forms import ContactView
 #from django.http import JsonResponse
-from django.contrib.auth import authenticate, login
 from django.views.generic.edit import CreateView
 
 def register(request):
@@ -19,9 +18,7 @@ def register(request):
            form.save()
            username = form.cleaned_data.get('username')
            messages.success(request, f'account created for {username}')
-           new_user = authenticate(username=form.cleaned_data['username'],password=form.cleaned_data['password1'],)
-           login(request, new_user)
-           return redirect('home')
+           return redirect('login')
     else:
        form = UserRegister()
     return render(request, 'users/register.html', {"form": form})

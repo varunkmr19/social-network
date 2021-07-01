@@ -1,14 +1,6 @@
 {% extends 'posts/base.html' %}
 {% block content %}
-{% load crispy_forms_tags %}
 {% load static %}
-<br/>
-       <br/>
-        <form class='post-create'  id="posting-awesome" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form|crispy }}<br/>
-            <button type='submit' id="post-uploading" class='btn btn-primary'>Publish</button>
-        </form>
 <div class='infinite-container'>
     {% for post in posts %}
         <div class='posts-div infinite-item'><br/>
@@ -20,12 +12,9 @@
                 <a href="{% url 'post-detail' post.id %}">
                     <div class='article-content'>
                         <p class='media'>{{ post.content }}</p>
-                           {% if post.image %}
-                  <img src="{{ post.image.url }}" style="width: auto;" class="post-image" />
-                {% endif %}
                     </div>
                 </a>
-                        <form method="POST" id="like-add" action="{% url 'add-like' post.pk %}">
+                        <form method="POST" action="{% url 'add-like' post.pk %}">
                             {% csrf_token %}
                             <input type="hidden" name="next" value="{{ request.path }}">
                             <button type="submit" class='btn btn-outline-info'><i class="fas fa-kiss-wink-heart"></i></button>{{ post.likes.all.count }}
@@ -39,7 +28,7 @@
         </div>
     {% endfor %}
 </div>
-       <!--     <div class="d-flex d-none position-fixed" style="top:35vh;left:46vw">
+            <div class="d-flex d-none position-fixed" style="top:35vh;left:46vw">
                 <button class="btn btn-primary loading">
                     <span class="spinner-border spinner-border-sm"></span>
                     Please wait...
@@ -73,24 +62,5 @@
 
         });
     </script>
--->
-<script type="text/javascript">
-    $(document).on('submit','#posting-awesome',function(e){
-        e.preventDefault();
-        $.ajax({
-            type:'POST',
-            url:'{% url "home" %}',
-            data:
-            {
-                content:$("#id_content").val(),
-                image:$("#id_image").val(),
-                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
-            },
-            success:function(){
 
-                  alert('Posted');
-                    }
-            })
-        });
-    </script>
 {% endblock %}

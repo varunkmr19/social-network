@@ -1,4 +1,3 @@
-[![Discord](https://img.shields.io/discord/853667307506368542?color=%23235379%20&label=Join%20our%20community&style=for-the-badge)](https://discord.gg/2XzgH4bZYp)&nbsp;&nbsp;![GitHub contributors](https://img.shields.io/github/contributors/privalise/social-network?color=%234369aa%20&style=for-the-badge)&nbsp;&nbsp;![GitHub top language](https://img.shields.io/github/languages/top/privalise/social-network?style=for-the-badge)
 # PrivaLise 
 ### Social Media Network Focuses On Data Security And Being Community Driven Web App
 
@@ -39,7 +38,7 @@ Any feedback or suggestion is appreciated and can be sent to [margual56@gmail.co
  ## Set Up: 
   * Clone The Repository `git clone https://github.com/privalise/social-network.git && cd privalise`
   * Install Requirements `pip install -r requirements.txt && cd privalises`
-  * Let's Migrate And Make Migrations `python manage.py makemigrations && python manage.py migrate`
+  * Let\`s Migrate And Make Migrations `python manage.py makemigrations && python manage.py migrate`
   * Now Finally We Will Run The Server `python manage.py runserver`
   
  ### Additional Steps:
@@ -60,7 +59,7 @@ Any feedback or suggestion is appreciated and can be sent to [margual56@gmail.co
 	  port=587
 	  tls=True
 	  host=smtp.provider.com
-	  backend=django.core.mail.backends.smtp.EmailBackend	
+	  backend=django.core.mail.backends.smtp.EmailBackend
 	  ```
 
 # LICENSE
