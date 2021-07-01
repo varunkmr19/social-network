@@ -1,0 +1,189 @@
+{% extends 'posts/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+
+    <div data-value="{{ post.id }}" id="post-id" class='posts-div'><br/>
+       <img class='rounded-circle article-img' src="{{ post.author.profile.image.url }}">
+       <div class='media-body'>
+       <div class='article-metadata'>
+      <p>By {{ post.author }} On {{ post.date_posted }}</p>
+      {% if post.author == user %}
+        <a href="{% url 'post-update' post.id %}" class='btn btn-outline-info mb-1'>Edit</a>
+        <a href="{% url 'post-delete' post.id %}" class='btn btn-outline-danger mb-1'>Delete</a>
+      {% endif %}
+        </div>
+        <div class='article-content detailed'>
+        <p class='media'>{{ post.content }}</p>
+           {% if post.image %}
+                  <img src="{{ post.image.url }}" class="post-image" />
+                {% endif %}
+    </div>
+        <form method="POST" action="{% url 'add-like' post.pk %}" id="add-like-form" > 
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <button type="submit" class='btn btn-outline-info'><i class="fas fa-kiss-wink-heart"></i></button>
+                            <!-- like count added into a span element -->
+                            <span id="like-count"> {{ post.likes.all.count }} </span>
+                        </form>
+                        <form method="POST" action="{% url 'add-dislike' post.pk %}" id="remove-like-form" >
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <button class='btn btn-outline-info' type="submit"><i class="fas fa-heart-broken"></i></button>
+                            <!-- dislike count added into a span element -->
+                            <span id="dislike-count"> {{ post.likes.all.count }} </span>
+                        </form>
+  </div>
+</div>
+    <div>
+      <div class="card mb-4  mt-3 ">
+      <div class="card-body" id="comments-collection">
+        <!-- comments -->
+        <h2>{{ comments.count }} comments</h2>
+
+        {% for comment in comments.all %}
+                {% if comment.is_parent %}
+        <div class="comments" style="padding: 10px;">
+          <p class="font-weight-bold">
+            {{ comment.author }}
+            <span class=" text-muted font-weight-normal">
+              {{ comment.date_created }}
+            </span>
+            {% if comment.author == user %}
+        <a href="{% url 'comment-delete' post.id comment.id %}" class='btn btn-outline-danger mb-1'>Delete</a>
+      {% endif %}
+          </p>
+          {{ comment.content | linebreaks }}
+        </div>
+        <form method="POST" action="{% url 'add-comment-like' post.pk comment.pk %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <button type="submit" class='btn btn-outline-info'><i class="fas fa-kiss-wink-heart"></i></button>{{ comment.likes.all.count }}
+                        </form>
+                        <form method="POST" action="{% url 'add-comment-dislike' post.pk comment.pk %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <button class='btn btn-outline-info' type="submit"><i class="fas fa-heart-broken"></i></button>{{ comment.dislikes.all.count }}
+                        </form><br/>
+        <button type="submit" onclick="commentReplyToggle('{{ comment.pk }}')" class="btn btn-primary">
+            <i class="far fa-comment-dots"></i>
+            Reply
+          </button>
+          <form method="POST" id="{{ comment.pk }}" action="{% url 'add-comment-reply' post.pk comment.pk %}" class='d-none'>
+            {% csrf_token %}
+            {{ comment_form|crispy }}
+            <button type="submit">Post</button>
+          </form>
+          {% for child_comment in comment.children %}
+              <div class="comments" style="padding: 10px;">
+          <p class="font-weight-bold">
+            {{ child_comment.author }}
+            <span class=" text-muted font-weight-normal">
+              {{ child_comment.date_created }}
+            </span>
+            {% if child_comment.author == user %}
+        <a href="{% url 'comment-delete' post.id child_comment.id %}" class='btn btn-outline-danger mb-1'>Delete</a>
+      {% endif %}
+          </p>
+          @{{ child_comment.author }} Replied To @{{ comment.author }}
+          {{ child_comment.content | linebreaks }}
+        </div>
+          {% endfor %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+      <div class="card mb-4  mt-3 ">
+      <div class="card-body">
+        {% if new_comment %}
+        <div class="alert alert-success" role="alert">
+          Your comment is Live
+        </div>
+        {% else %}
+        <h3>Leave a comment</h3>
+        <form method="post" id="comment-form" style="margin-top: 1.3em;">
+          {{ comment_form| crispy }}
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
+        </form>
+        {% endif %}
+      </div> 
+    </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+    <script>
+    let commentsCollection = $("#comments-collection");
+      const postId = $("#post-id")[0].dataset.value;
+    // TODO: change how to get postId
+
+      console.log($.ajax())
+      $('#comment-form').on('submit', function(event){
+        event.preventDefault();
+        // alert("submitting form")
+        submitForm();
+        function submitForm(){
+          const postId = Number(window.location.pathname.split("/")[2]);
+          console.log("POST ID", postId);
+          $.ajax({
+            url: `/post/${postId}/`,
+            method: "POST",
+            data: $("#comment-form").serialize()
+          }).done(function(response){
+            let author =response.author;
+            let date_created = response.date_created;
+            let content = response.comment;
+            
+            console.log("response", response);
+            // attach comment to the DOM
+            let commentCard = '<div class="comments" style="padding: 10px; >' +
+              '<p class="font-weight-bold">'
+                + author +
+                '<span class=" text-muted font-weight-normal">' + 
+                  date_created +
+                '</span>' +
+              '</p>'
+              + content + 
+              '</div>'
+            commentsCollection.append(commentCard);
+            document.querySelector("textarea").value = "";
+          });
+        }
+      });
+
+      // Add like 
+      $('#add-like-form').on('submit', function(event){
+        console.log("post id", postId)
+        event.preventDefault();
+        $.ajax({
+          url: `/post/add/like/${postId}`,
+          method: 'POST',
+          data: $('#add-like-form').serialize()
+        }).done(function(response){
+          const likeCount = $("#like-count")[0];
+          const dislikeCount = $("#dislike-count")[0];
+          likeCount.innerHTML = response.like_count;
+          dislikeCount.innerHTML = response.dislike_count;
+        });
+      });
+
+      // Remove like
+      $('#remove-like-form').on('submit', function(event){
+        console.log("post id", postId)
+        event.preventDefault();
+        $.ajax({
+          url: `/post/remove/like/${postId}`,
+          method: 'POST',
+          data: $('#remove-like-form').serialize()
+        }).done(function(response){
+          const likeCount = $("#like-count")[0];
+          const dislikeCount = $("#dislike-count")[0];
+          likeCount.innerHTML = response.like_count;
+          dislikeCount.innerHTML = response.dislike_count;
+        });
+      });
+    </script>
+        <script type="text/javascript" src="{% static 'js/reply.js' %}"></script>
+{% endblock %}

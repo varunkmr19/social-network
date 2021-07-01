@@ -1,0 +1,14 @@
+{% extends 'users/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %} Register Now {% endblock %}
+
+{% block content %}
+    <form method="POST" id="formId">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <br/>
+        <button id="signup" type="submit" class="btn btn-outline-info">Join Now</button>
+   </form>
+   <br/>
+   <h3 >Already Have An Account? <a href="{% url 'login' %}" style="color: cyan;">Login !</a></h3>
+{% endblock %} 

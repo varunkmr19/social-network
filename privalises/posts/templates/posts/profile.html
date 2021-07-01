@@ -1,0 +1,65 @@
+{% extends 'posts/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %} {{ user.username }} Profile {% endblock %}
+{% load static %}
+{% block content %}
+<br><br>
+    <div class='profile'>
+
+        <img class='profile-image' id="imgbox"  src="{{ user.profile.image.url }}"><br>
+        <h2 class='account-heading'>@{{ user.username }} {% if user.profile.verified %}<i style='color: blue; width: 100;' class="fas fa-passport"></i>{% endif %}</h2>
+        <h2 class='text-secondary'>{{ profile.name }}</h2>
+        <h2 class='text-secondary'>{{ user.email }}</h2>
+        <p>{{ profile.bio }}</p>
+        {% if request.user.id == user.id %}
+        <button type="button" class="btn btn-outline-info"><a href='{% url "profile-update" %}'>Update Info</a></button>
+   <a href="{% url 'password-change' %}" class='btn btn-outline-info'>Change Password !</a><br/><br/>
+         {% else %}
+         {% if is_following == False %}
+         <form method="POST" action='{% url "add-follower" profile.id %}'>
+            {% csrf_token %}
+
+            <button type="submit" class="btn btn-outline-danger">Follow</button></form><br/><br/>
+             
+          {% else %}
+         <form method="POST" action='{% url "remove-follower" profile.id %}'>
+            {% csrf_token %}
+            
+        <button type="submit" class="btn btn-outline-danger">UnFollow</button>
+    </form><br/><br/>
+ 
+
+        {% endif %}{% endif %}
+    </div>
+    <div class='infinite-container'>
+    {% for post in posts %}
+        <div class='posts-div infinite-item'><br/>
+            <img class='rounded-circle article-img' src="{{ post.author.profile.image.url }}">
+            <div class='media-body'>
+                <div class='article-metadata'>
+                    <p>  <a class='mr-2' href='#' style='text-align:left;left:8px;'>@{{ post.author }}</a> On {{ post.date_posted }}</p>
+                </div>
+                <a href="{% url 'post-detail' post.id %}">
+                    <div class='article-content'>
+                        <p class='media'>{{ post.content }}</p>
+                         {% if post.image %}
+                  <img src="{{ post.image.url }}" class="post-image" />
+                {% endif %}
+                    </div>
+                </a>
+                    <form method="POST" action="{% url 'add-like' post.pk %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <button type="submit" class='btn btn-outline-info'><i class="fas fa-kiss-wink-heart"></i></button>{{ post.likes.all.count }}
+                        </form>
+                        <form method="POST" action="{% url 'add-dislike' post.pk %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <button class='btn btn-outline-info' type="submit"><i class="fas fa-heart-broken"></i></button>{{ post.dislikes.all.count }}
+                        </form>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+        
+{% endblock content %} 
