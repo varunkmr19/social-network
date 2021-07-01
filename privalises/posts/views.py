@@ -48,9 +48,6 @@ class PostListView(LoginRequiredMixin, View):
             new_post = form.save(commit=False)
             new_post.author = request.user
             new_post.save()
-            return JsonResponse({'error': False, 'message': 'Uploaded Successfully'})
-        else:
-            return JsonResponse({'error': True, 'errors': form.errors})
 
         context = {
             'posts': posts,
@@ -58,6 +55,10 @@ class PostListView(LoginRequiredMixin, View):
         }
 
         return render(request, 'posts/post_list.html', context)
+
+
+
+
 
 @login_required
 def PostDetailView(request, pk):

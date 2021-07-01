@@ -1,62 +1,14 @@
+{% extends 'users/base.html' %}
 {% load crispy_forms_tags %}
-{% load static %}
-<!DOCTYPE html>
-<html>
+{% block title %} Register Now {% endblock %}
 
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-		<title> Register Now </title>
-		<link rel="stylesheet" href="{% static 'css/main.css' %}">
-		<link rel="stylesheet" href="{% static 'css/logo.css' %}">
-		<link rel="stylesheet" href="{% static 'css/login/page.css' %}">
-		<link rel="stylesheet" href="{% static 'css/register/page.css' %}">
-
-		<script>
-			function checkUsername(input){
-				let text = document.getElementById(input).value;
-				
-				console.log(/^([A-Za-z0-9\.\-\_]+)$/.test(text));
-
-				return /^([A-Za-z0-9\.\-\_]+)$/.test(text);
-			}
-
-			function checkPasswords(pwd1, pwd2){
-				let text1 = document.getElementById(pwd1).value;
-				let text2 = document.getElementById(pwd2).value;
-
-				let res = text1===text2;
-
-				document.getElementById("passwderror").style="display:" + (res?"none":"unset");
-
-				return res;
-			}
-
-			function checkPasswords(event, pwd1, pwd2){
-				let text1 = pwd1.value;
-				let text2 = pwd2.value + event.key;
-
-				let res = text1===text2;
-
-				document.getElementById("passwderror").style="display:" + (res?"none":"unset");
-
-				return res;
-			}
-		</script>
-	</head>
-
-	<body>
-		<main>
-			<div class="logo-text" style="margin-right: 10vw;">
-				<div>Priva<span>Lise</span></div>
-			</div>
-		
-			<form method="POST" style="margin: 0" onsubmit="return (checkPasswords('id_password1', 'id_password2') && checkUsername('id_username'))">
-				{% csrf_token %}
-				{{ form| crispy }}
-			</form>
-		</main>
-		<h3>Already Have An Account? <a href="http://localhost:8080/auth/login/" style="color: cyan;">Login !</a></h3>
-	</body>
-</html>
+{% block content %}
+    <form method="POST" id="formId">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <br/>
+        <button id="signup" type="submit" class="btn btn-outline-info">Join Now</button>
+   </form>
+   <br/>
+   <h3 >Already Have An Account? <a href="{% url 'login' %}" style="color: cyan;">Login !</a></h3>
+{% endblock %} 

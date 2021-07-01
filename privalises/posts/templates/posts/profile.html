@@ -2,24 +2,16 @@
 {% load crispy_forms_tags %}
 {% block title %} {{ user.username }} Profile {% endblock %}
 {% load static %}
-<!DOCTYPE html>
-<!-- saved from url=(0031)http://localhost:8080/profile/5 -->
-<html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		
-		<title>Your profile</title>
-	</head>
-	<body id="body" class="dark">
-          {% block content %}
-			<section class="profile">
-				<div class="picture-container">
-					<img class="profile-picture" src="{{ user.profile.image.url }}">
-				</div>
+{% block content %}
+<br><br>
+    <div class='profile'>
 
-				<h2 class="account-heading">@{{ user.username }} {% if user.profile.verified %}<i style='color: blue; width: 100;' class="fas fa-passport"></i>{% endif %}</h2><br/><br/>
-				{% if request.user.id == user.id %}
+        <img class='profile-image' id="imgbox"  src="{{ user.profile.image.url }}"><br>
+        <h2 class='account-heading'>@{{ user.username }} {% if user.profile.verified %}<i style='color: blue; width: 100;' class="fas fa-passport"></i>{% endif %}</h2>
+        <h2 class='text-secondary'>{{ profile.name }}</h2>
+        <h2 class='text-secondary'>{{ user.email }}</h2>
+        <p>{{ profile.bio }}</p>
+        {% if request.user.id == user.id %}
         <button type="button" class="btn btn-outline-info"><a href='{% url "profile-update" %}'>Update Info</a></button>
    <a href="{% url 'password-change' %}" class='btn btn-outline-info'>Change Password !</a><br/><br/>
          {% else %}
@@ -38,50 +30,36 @@
  
 
         {% endif %}{% endif %}
-			</section>
-
-			<section class="posts">
-				<div class="post">
-					<div class="profile-container">
-						<img class="profile" src="resources/example_profile3.jpg">
-					</div>
-
-					<div class="post-content">
-						<div class="post-info">
-							<div class="post-info1">
-								<a class="username" href="/bradkitt">@bradkitt</a>
-								<p class="date">1h ago</p>
-							</div>
-
-							<p class="info">Replying to <a class="username" href="/theawesomecat64">@theawesomecat64</a></p>
-						</div>
-
-						<div class="post-text">
-							<p>Wtf... I'll call an ambulance!</p>
-						</div>
-					</div>
-				</div>
-
-				<div class="post">
-					<div class="profile-container">
-						<img class="profile" src="resources/example_profile3.jpg">
-					</div>
-
-					<div class="post-content">
-						<div class="post-info">
-							<div class="post-info1">
-								<a class="username" href="/bradkitt">@bradkitt</a>
-								<p class="date">3h ago</p>
-							</div>
-
-							<p class="info">Replying to <a class="username" href="/theawesomecat64">@theawesomecat64</a></p>
-						</div>
-						<div class="post-text">
-							<p>Dude... are u ok??</p>
-						</div>
-					</div>
-				</div>
-			</section>
-			{% endblock content %}
-	</body>
-</html>
+    </div>
+    <div class='infinite-container'>
+    {% for post in posts %}
+        <div class='posts-div infinite-item'><br/>
+            <img class='rounded-circle article-img' src="{{ post.author.profile.image.url }}">
+            <div class='media-body'>
+                <div class='article-metadata'>
+                    <p>  <a class='mr-2' href='#' style='text-align:left;left:8px;'>@{{ post.author }}</a> On {{ post.date_posted }}</p>
+                </div>
+                <a href="{% url 'post-detail' post.id %}">
+                    <div class='article-content'>
+                        <p class='media'>{{ post.content }}</p>
+                         {% if post.image %}
+                  <img src="{{ post.image.url }}" class="post-image" />
+                {% endif %}
+                    </div>
+                </a>
+                    <form method="POST" action="{% url 'add-like' post.pk %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <button type="submit" class='btn btn-outline-info'><i class="fas fa-kiss-wink-heart"></i></button>{{ post.likes.all.count }}
+                        </form>
+                        <form method="POST" action="{% url 'add-dislike' post.pk %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <button class='btn btn-outline-info' type="submit"><i class="fas fa-heart-broken"></i></button>{{ post.dislikes.all.count }}
+                        </form>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+        
+{% endblock content %} 
