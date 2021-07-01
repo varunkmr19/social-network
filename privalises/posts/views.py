@@ -1,12 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post, Comment, Profile
+from .models import Post, Comment, Reply, Profile
 from django.views import View
 from django.http import HttpResponseRedirect
 from django.contrib.auth.forms import UserCreationForm
-from .forms import ProfileUpdteForm, UserUpdateForm, CommentForm, PostForm
+from .forms import ProfileUpdteForm, UserUpdateForm, CommentForm#, ReplyForm
 from django.contrib import messages
-from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -14,51 +13,12 @@ from django.urls import reverse_lazy
 from django.http import JsonResponse, HttpResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 import json
-'''
 class PostListView(LoginRequiredMixin, ListView):
     model = Post 
     # The Default Template -> <app-name>/<model>_<viewtype>.html
     context_object_name = 'posts'
     ordering = ['-date_posted']
     paginate_by = 4
-'''
-class PostListView(LoginRequiredMixin, View):
-    def get(self, request, *args, **kwargs):
-        logged_in_user = request.user
-        posts = Post.objects.filter(
-            author__profile__followers__in=[logged_in_user.id]
-        ).order_by('-date_posted')
-        form = PostForm()
-
-        context = {
-            'posts': posts,
-            'form': form,
-        }
-
-        return render(request, 'posts/post_list.html', context)
-
-    def post(self, request, *args, **kwargs):
-        logged_in_user = request.user
-        posts = Post.objects.filter(
-            author__profile__followers__in=[logged_in_user.id]
-        ).order_by('-date_posted')
-        form = PostForm(request.POST, request.FILES)
-
-        if form.is_valid():
-            new_post = form.save(commit=False)
-            new_post.author = request.user
-            new_post.save()
-
-        context = {
-            'posts': posts,
-            'form': form,
-        }
-
-        return render(request, 'posts/post_list.html', context)
-
-
-
-
 
 @login_required
 def PostDetailView(request, pk):
@@ -90,16 +50,15 @@ def PostDetailView(request, pk):
                                            'comments': comments,
                                            'new_comment': new_comment,
                                            'comment_form': comment_form})
-'''
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
-    fields = ['content', 'image']
+    fields = ['content']
     context_object_name = 'content'
 
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
-'''
+
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
     context_object_name = 'post'
@@ -143,7 +102,7 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
-    fields = ['content', 'image']
+    fields = ['content']
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
@@ -267,77 +226,3 @@ class AddDislike(LoginRequiredMixin, View):
           'dislike_count': dislike_count
         })
         # return HttpResponseRedirect(next)            
-class Search(LoginRequiredMixin, View):
-    def get(self, request, *args, **kwargs):
-        query = self.request.GET.get('query')
-        profile_list = Profile.objects.filter(
-               Q(user__username__icontains=query)
-            )
-        context = {
-        'profiles': profile_list,
-        }
-        return render(request, 'posts/search.html', context)
-
-class AddCommentLike(LoginRequiredMixin, View):
-    def post(self, request, pk, *args, **kwargs):
-        comment = Comment.objects.get(pk=pk)
-        is_dislike = False
-        for dislike in comment.dislikes.all():
-            if dislike == request.user:
-                is_dislike = True
-                break
-        if is_dislike:
-            comment.dislikes.remove(request.user)  
-        is_like = False
-        for like in comment.likes.all():
-            if like == request.user:
-                is_like = True
-                break
-        if not is_like:
-            comment.likes.add(request.user)
-        if is_like:
-            post.likes.remove(request.user)
-        
-
-        next = request.POST.get("next", '/')
-        return HttpResponseRedirect(next)
-
-
-class AddCommentDislike(LoginRequiredMixin, View):
-    def post(self, request, pk, *args, **kwargs):
-        comment = Comment.objects.get(pk=pk)
-        is_like = False
-        for like in comment.likes.all():
-            if like == request.user:
-                is_like = True
-                break
-        if is_like:
-            comment.likes.remove(request.user)
-        is_dislike = False
-        for dislike in comment.dislikes.all():
-            if dislike == request.user:
-                is_dislike = True
-                break
-        if not is_dislike:
-            comment.dislikes.add(request.user)
-        if is_dislike:
-            comment.dislikes.remove(request.user)
-        next = request.POST.get("next", '/')
-        return HttpResponseRedirect(next)            
-
-class CommentReply(LoginRequiredMixin, View):
-    def post(self, request, post_pk, pk, *args, **kwargs):
-        post = Post.objects.get(pk=post_pk)
-        parent_comment = Comment.objects.get(pk=pk)
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            new_comment = form.save(commit=False)
-            new_comment.author = request.user
-            new_comment.post = post
-            new_comment.parent = parent_comment
-            new_comment.save()
-        return redirect('post-detail', pk=post_pk)
-
-
-
-

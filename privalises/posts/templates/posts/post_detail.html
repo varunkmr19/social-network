@@ -1,6 +1,5 @@
 {% extends 'posts/base.html' %}
 {% load crispy_forms_tags %}
-{% load static %}
 {% block content %}
 
     <div data-value="{{ post.id }}" id="post-id" class='posts-div'><br/>
@@ -15,9 +14,6 @@
         </div>
         <div class='article-content detailed'>
         <p class='media'>{{ post.content }}</p>
-           {% if post.image %}
-                  <img src="{{ post.image.url }}" class="post-image" />
-                {% endif %}
     </div>
         <form method="POST" action="{% url 'add-like' post.pk %}" id="add-like-form" > 
                             {% csrf_token %}
@@ -42,7 +38,6 @@
         <h2>{{ comments.count }} comments</h2>
 
         {% for comment in comments.all %}
-                {% if comment.is_parent %}
         <div class="comments" style="padding: 10px;">
           <p class="font-weight-bold">
             {{ comment.author }}
@@ -55,41 +50,6 @@
           </p>
           {{ comment.content | linebreaks }}
         </div>
-        <form method="POST" action="{% url 'add-comment-like' post.pk comment.pk %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="next" value="{{ request.path }}">
-                            <button type="submit" class='btn btn-outline-info'><i class="fas fa-kiss-wink-heart"></i></button>{{ comment.likes.all.count }}
-                        </form>
-                        <form method="POST" action="{% url 'add-comment-dislike' post.pk comment.pk %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="next" value="{{ request.path }}">
-                            <button class='btn btn-outline-info' type="submit"><i class="fas fa-heart-broken"></i></button>{{ comment.dislikes.all.count }}
-                        </form><br/>
-        <button type="submit" onclick="commentReplyToggle('{{ comment.pk }}')" class="btn btn-primary">
-            <i class="far fa-comment-dots"></i>
-            Reply
-          </button>
-          <form method="POST" id="{{ comment.pk }}" action="{% url 'add-comment-reply' post.pk comment.pk %}" class='d-none'>
-            {% csrf_token %}
-            {{ comment_form|crispy }}
-            <button type="submit">Post</button>
-          </form>
-          {% for child_comment in comment.children %}
-              <div class="comments" style="padding: 10px;">
-          <p class="font-weight-bold">
-            {{ child_comment.author }}
-            <span class=" text-muted font-weight-normal">
-              {{ child_comment.date_created }}
-            </span>
-            {% if child_comment.author == user %}
-        <a href="{% url 'comment-delete' post.id child_comment.id %}" class='btn btn-outline-danger mb-1'>Delete</a>
-      {% endif %}
-          </p>
-          @{{ child_comment.author }} Replied To @{{ comment.author }}
-          {{ child_comment.content | linebreaks }}
-        </div>
-          {% endfor %}
-          {% endif %}
         {% endfor %}
       </div>
     </div>
@@ -185,5 +145,4 @@
         });
       });
     </script>
-        <script type="text/javascript" src="{% static 'js/reply.js' %}"></script>
 {% endblock %}

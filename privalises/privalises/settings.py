@@ -105,4 +105,7 @@ EMAIL_PORT = config('port', cast=int)
 EMAIL_USE_TLS = config('tls')
 EMAIL_HOST_USER = config('email')
 EMAIL_HOST_PASSWORD = config('pass')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
+#AUTHENTICATION_BACKENDS = ('users.core.backends.CaseInsensitiveModelBackend', )

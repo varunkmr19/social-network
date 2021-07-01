@@ -1,13 +1,13 @@
 {% extends 'posts/base.html' %}
 {% load crispy_forms_tags %}
-{% block title %} {{ user.username }} Profile {% endblock %}
+{% block title %} Your Profile {% endblock %}
 {% load static %}
 {% block content %}
 <br><br>
     <div class='profile'>
 
         <img class='profile-image' id="imgbox"  src="{{ user.profile.image.url }}"><br>
-        <h2 class='account-heading'>@{{ user.username }} {% if user.profile.verified %}<i style='color: blue; width: 100;' class="fas fa-passport"></i>{% endif %}</h2>
+        <h2 class='account-heading'>@{{ user.username }}</h2>
         <h2 class='text-secondary'>{{ profile.name }}</h2>
         <h2 class='text-secondary'>{{ user.email }}</h2>
         <p>{{ profile.bio }}</p>
@@ -42,9 +42,6 @@
                 <a href="{% url 'post-detail' post.id %}">
                     <div class='article-content'>
                         <p class='media'>{{ post.content }}</p>
-                         {% if post.image %}
-                  <img src="{{ post.image.url }}" class="post-image" />
-                {% endif %}
                     </div>
                 </a>
                     <form method="POST" action="{% url 'add-like' post.pk %}">

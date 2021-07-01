@@ -176,12 +176,19 @@
   </head>
   <body>
     <nav id="nav">
+      <!-- <h2 class="privalise" style="color: rgb(200, 244, 96);">Privalise !</h2>-->
       <ul id="ul">
         <br />
         <li>
           <a href="{% url 'home' %}"
             ><i class="fas fa-house-user"></i><br />
             Home</a
+          >
+        </li>
+        <li>
+          <a href="{% url 'post-create' %}"
+            ><i class="fas fa-signature"></i><br />
+            Create A Post</a
           >
         </li>
         <li>
@@ -199,10 +206,10 @@
     </nav>
     <div id="secnnav">
       <ul id="themeul">
-        <form method="GET" action="{% url 'search' %}">
-    <input type="text" class="form-control" placeholder="Search" name="query" value="{{ request.GET.query }}"><br/>
-    <button type="submit" class="btn btn-outline-danger btn-primary">Search</button>
-</form>
+        <button type="submit" onclick="dark()" id="theme">
+          <i class="fas fa-paint-roller" style="margin-right: 7px"
+            >Change Theme</i
+          >
         </button>
       </ul>
     </div>
@@ -217,6 +224,15 @@
       integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
       crossorigin="anonymous"
     ></script>
+    <script>
+      function dark() {
+        if (document.body.style.backgroundColor == "#03072a") {
+          document.body.style.backgroundColor = "#333";
+        } else {
+          document.body.style.backgroundColor = "#03072a";
+        }
+      }
+    </script>
 
   
   {% block javascript %}
