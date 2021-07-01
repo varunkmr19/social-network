@@ -39,7 +39,7 @@ Any feedback or suggestion is appreciated and can be sent to [margual56@gmail.co
  ## Set Up: 
   * Clone The Repository `git clone https://github.com/privalise/social-network.git && cd privalise`
   * Install Requirements `pip install -r requirements.txt && cd privalises`
-  * Let\`s Migrate And Make Migrations `python manage.py makemigrations && python manage.py migrate`
+  * Let's Migrate And Make Migrations `python manage.py makemigrations && python manage.py migrate`
   * Now Finally We Will Run The Server `python manage.py runserver`
   
  ### Additional Steps:
