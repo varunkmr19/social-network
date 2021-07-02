@@ -47,13 +47,13 @@
 
 	<body>
 		<main class="dark">
-			<div class="logo-text" style="margin-right: 10vw;">
+			<div class="logo-text">
 				<div>Priva<span>Lise</span></div>
 			</div>
 		
 			<form method="POST" style="margin: 0" onsubmit="return (checkPasswords('id_password1', 'id_password2') && checkUsername('id_username'))">
 				<table class="login form-inputs">
-						{% csrf_token %}		
+						{% csrf_token %}
 
 						<tr>
 							<td id="div_id_username">
