@@ -18,12 +18,6 @@ class CommentForm(forms.ModelForm):
         fields = ('content',)
 
 class UserUpdateForm(forms.ModelForm):
-    def clean(self):
-        cleaned_data = super(UserUpdateForm, self).clean()
-        username = cleaned_data.get('username')
-        if username and User.objects.filter(username__iexact=username).exists():
-            self.add_error('username', 'A user with that username already exists.')
-        return cleaned_data
     email = forms.EmailField(required=False)
 
     class Meta:

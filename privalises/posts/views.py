@@ -48,9 +48,6 @@ class PostListView(LoginRequiredMixin, View):
             new_post = form.save(commit=False)
             new_post.author = request.user
             new_post.save()
-            return JsonResponse({'error': False, 'message': 'Uploaded Successfully'})
-        else:
-            return JsonResponse({'error': True, 'errors': form.errors})
 
         context = {
             'posts': posts,
@@ -58,6 +55,10 @@ class PostListView(LoginRequiredMixin, View):
         }
 
         return render(request, 'posts/post_list.html', context)
+
+
+
+
 
 @login_required
 def PostDetailView(request, pk):
@@ -338,5 +339,25 @@ class CommentReply(LoginRequiredMixin, View):
         return redirect('post-detail', pk=post_pk)
 
 
+
+
+@ login_required
+def AddLike(request):
+    if request.POST.get('action') == 'post':
+        result = ''
+        id = int(request.POST.get('postid'))
+        post = get_object_or_404(Post, id=id)
+        if post.likes.filter(id=request.user.id).exists():
+            post.likes.remove(request.user)
+            post.like_count -= 1
+            result = post.like_count
+            post.save()
+        else:
+            post.likes.add(request.user)
+            post.like_count += 1
+            result = post.like_count
+            post.save()
+
+        return JsonResponse({'result': result, })
 
 

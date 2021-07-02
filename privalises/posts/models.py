@@ -10,11 +10,13 @@ class Post(models.Model):
     content = models.TextField()
     date_posted = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    likes = models.ManyToManyField(User, blank=True, related_name='likes')
-    dislikes = models.ManyToManyField(User, blank=True, related_name='dislikes')
+    #likes = models.ManyToManyField(User, blank=True, related_name='likes')
+    #dislikes = models.ManyToManyField(User, blank=True, related_name='dislikes')
     shared_body  = models.TextField(blank=True, null=True)
     shared_on = models.DateTimeField(blank=True, null=True)
     shared_user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name='+')
+    likes = models.ManyToManyField(User, related_name='like', default=None, blank=True)
+    like_count = models.BigIntegerField(default='0')
     class Meta:
         ordering = ['-date_posted']#, '-shared_on']
     def __str__(self):
