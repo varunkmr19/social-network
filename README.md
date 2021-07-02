@@ -27,14 +27,9 @@ Join our [discord server](https://discord.gg/2XzgH4bZYp) now!
    * 2 factor authentication
 
 ## New front-end
-The entire front-end is being completely re-designed from the ground up. In order to iterate faster, it has been separated into its own repository, and in the near future it will be incorporated into this one.
-Links:
-* [Login](https://margual56.github.io/demo-web/login)
-* [Sign up](https://margual56.github.io/demo-web/register)
-* [Home page](https://margual56.github.io/demo-web/)
-* [Profile page](https://margual56.github.io/demo-web/profile)
+The entire front-end is being completely re-designed from the ground up. This may cause some inconsistencies or non-responsive parts of it, as well as sudden changes in design (hopefully for the better).
 
-Any feedback or suggestion is appreciated and can be sent to [margual56@gmail.com](margual56@gmail.com) or to the discord server.
+Any feedback or suggestion is very much appreciated and can be sent to [the discord server](https://discord.gg/2XzgH4bZYp).
 
  ## Set Up: 
   * Clone The Repository `git clone https://github.com/privalise/social-network.git && cd privalise`
