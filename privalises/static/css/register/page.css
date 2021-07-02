@@ -1,5 +1,6 @@
 body {
 	background: linear-gradient(90deg, var(--dark-bg) 0%, var(--dark-bg3) 100%);
+	color: white;
 
 	width: 100vw;
 	height: 100vh;
@@ -37,12 +38,17 @@ main{
 
 	.logo-text {
 		margin-right: 0 !important;
-		margin-bottom: 4rem;
+		margin-top: 4rem;
+
+		padding: 0;
+		padding-top: 1rem;
+		padding-bottom: 1rem;
 	}
 
 	.login {
 		width: 90%;
 		margin: auto;
+		margin-top: 20%;
 		padding: 1.5rem;
 	}
 }
