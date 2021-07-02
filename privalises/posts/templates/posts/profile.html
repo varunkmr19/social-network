@@ -119,9 +119,9 @@
 							</div>
       				</div>
 
-						<div class="post-text">
+						<a href="{% url 'post-detail' post.pk %}"><div class="post-text">
 							<p>{{ post.content }}</p>
-						</div>
+						</div></a>
 					</div>
 				</div>
 				{% endfor %}
