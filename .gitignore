@@ -2,6 +2,21 @@
 .idea/
 
 
+################# DJANGO ####################
+**/*.egg-info
+**/*.pot
+**/*.py[co]
+**/.tox/
+**/MANIFEST
+**/dist/
+**/docs/_build/
+**/docs/locale/
+**/node_modules/
+**/tests/coverage_html/
+**/tests/.coverage
+**/build/
+**/tests/report/
+
 ####### PYTHON DEFAULT GITIGNORE ############
 # Byte-compiled / optimized / DLL files
 **/__pycache__/
@@ -13,9 +28,7 @@
 
 # Distribution / packaging
 **/.Python
-**/build/
 **/develop-eggs/
-**/dist/
 **/downloads/
 **/eggs/
 **/.eggs/
@@ -30,7 +43,6 @@
 **/*.egg-info/
 **/.installed.cfg
 **/*.egg
-**/MANIFEST
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -44,7 +56,6 @@
 
 # Unit test / coverage reports
 **/htmlcov/
-**/.tox/
 **/.nox/
 **/.coverage
 **/.coverage.*
@@ -58,7 +69,6 @@
 
 # Translations
 **/*.mo
-**/*.pot
 
 # Django stuff:
 **/*.log
@@ -74,7 +84,6 @@
 **/.scrapy
 
 # Sphinx documentation
-**/docs/_build/
 
 # PyBuilder
 **/target/
