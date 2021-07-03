@@ -43,6 +43,8 @@ main{
 		padding: 0;
 		padding-top: 1rem;
 		padding-bottom: 1rem;
+
+		width: auto;
 	}
 
 	.login {
