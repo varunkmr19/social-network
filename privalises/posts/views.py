@@ -197,17 +197,13 @@ class ProfileView(LoginRequiredMixin, View):
         }
         return render(request, 'posts/profile.html', context)
  
-class AddFollower(LoginRequiredMixin, View):
-    def post(self, request, pk, *args, **kwargs):
-        profile = Profile.objects.get(pk=pk)
-        profile.followers.add(request.user)
-        return redirect('profile', pk=profile.pk)
+
 class RemoveFollower(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         profile = Profile.objects.get(pk=pk)
         profile.followers.remove(request.user)
         return redirect('profile', pk=profile.pk)
-
+'''
 class AddLike(LoginRequiredMixin, View): 
     def post(self, request, pk, *args, **kwargs):
         post = Post.objects.get(pk=pk)
@@ -266,18 +262,14 @@ class AddDislike(LoginRequiredMixin, View):
           'like_count': like_count,
           'dislike_count': dislike_count
         })
-        # return HttpResponseRedirect(next)            
+        # return HttpResponseRedirect(next)       
+'''     
 class Search(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         query = self.request.GET.get('query')
-        profile_list = Profile.objects.filter(
-               Q(user__username__icontains=query)
-            )
-        context = {
-        'profiles': profile_list,
-        }
+        profile_list = Profile.objects.filter(Q(user__username__icontains=query))
+        context = {'profiles': profile_list,}
         return render(request, 'posts/search.html', context)
-
 class AddCommentLike(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         comment = Comment.objects.get(pk=pk)
@@ -297,12 +289,8 @@ class AddCommentLike(LoginRequiredMixin, View):
             comment.likes.add(request.user)
         if is_like:
             post.likes.remove(request.user)
-        
-
         next = request.POST.get("next", '/')
         return HttpResponseRedirect(next)
-
-
 class AddCommentDislike(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         comment = Comment.objects.get(pk=pk)
@@ -324,7 +312,6 @@ class AddCommentDislike(LoginRequiredMixin, View):
             comment.dislikes.remove(request.user)
         next = request.POST.get("next", '/')
         return HttpResponseRedirect(next)            
-
 class CommentReply(LoginRequiredMixin, View):
     def post(self, request, post_pk, pk, *args, **kwargs):
         post = Post.objects.get(pk=post_pk)
@@ -337,14 +324,10 @@ class CommentReply(LoginRequiredMixin, View):
             new_comment.parent = parent_comment
             new_comment.save()
         return redirect('post-detail', pk=post_pk)
-
-
-
 @ login_required
 def AddDislike(request):
     if request.POST.get('action') == 'post':
         result = ''
-
         id = int(request.POST.get('postid'))
         post = get_object_or_404(Post, id=id)
         is_like = False
@@ -393,5 +376,8 @@ def AddLike(request):
             post.save()
 
         return JsonResponse({'result': result, })
-
-
+class AddFollower(LoginRequiredMixin, View):
+    def post(self, request, pk, *args, **kwargs):
+        profile = Profile.objects.get(pk=pk)
+        profile.followers.add(request.user)
+        return redirect('profile', pk=profile.pk)
