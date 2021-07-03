@@ -11,7 +11,7 @@ class Post(models.Model):
     date_posted = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     #likes = models.ManyToManyField(User, blank=True, related_name='likes')
-    #dislikes = models.ManyToManyField(User, blank=True, related_name='dislikes')
+    dislikes = models.ManyToManyField(User, blank=True, default=None, related_name='dislikes')
     shared_body  = models.TextField(blank=True, null=True)
     shared_on = models.DateTimeField(blank=True, null=True)
     shared_user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name='+')
@@ -52,6 +52,7 @@ class Profile(models.Model):
     name = models.CharField(max_length=30, blank=True, null=True)
     followers = models.ManyToManyField(User, blank=True, related_name='followers')
     verified = models.BooleanField(default=False)
+    followers_count = models.BigIntegerField(default='0')
     def __str__(self):
         return f'{self.user.username} Profile'
     def save(self, *args, **kwargs):

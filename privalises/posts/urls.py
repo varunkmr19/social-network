@@ -11,12 +11,12 @@ urlpatterns = [
     path('post/<int:post_pk>/comment/delete/<int:pk>', CommentDeleteView.as_view(), name='comment-delete'),
     path('profile/<int:pk>', ProfileView.as_view(), name='profile'),
     path('profile/remove/follower/<int:pk>', RemoveFollower.as_view(), name='remove-follower'),
-    path('profile/add/follower/<int:pk>', AddFollower.as_view(), name='add-follower'),
+    path('profile/add/follower/', AddFollower, name='add-follower'),
     path('post/add/like/', AddLike, name='add-like'),
     path('post/remove/comment/like/<int:post_pk>/<int:pk>', AddCommentLike.as_view(), name='add-comment-like'),
     path('post/add/comment/like/<int:post_pk>/<int:pk>', AddCommentDislike.as_view(), name='add-comment-dislike'),
     path('post/add/comment/reply/<int:post_pk>/<int:pk>', CommentReply.as_view(), name='add-comment-reply'),
-    path('post/remove/like/<int:pk>', AddDislike.as_view(), name='add-dislike'),
+    path('post/remove/like/', AddDislike, name='add-dislike'),
     path('search/', Search.as_view(), name='search'),
 
 ]
