@@ -1,71 +1,7 @@
-<!DOCTYPE html>
-{% load static %}
-<!-- saved from url=(0031)http://localhost:8080/profile/5 -->
-<html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		
-		<title>Your profile</title>
-		<link rel="stylesheet" href="{% static 'css/main.css' %}">
-		<link rel="stylesheet" href="{% static 'css/logo.css' %}">
-		<link rel="stylesheet" href="{% static 'css/home/navbar.css' %}">
-		<link rel="stylesheet" href="{% static 'css/home/post.css' %}">
-		<link rel="stylesheet" href="{% static 'css/profile/page.css' %}">
-		<script src="{% static 'js/theme.js' %}"></script>
-	</head>
-	<body id="body" class="dark">
-		<nav id="navbar" class="navbar dark">
-			<ul class="navbar-nav">
-				<li class="nav-item">
-					<img id="logo" class="icon" src="{% static 'img/placeholder.png' %}">
-				</li>
-
-				<li class="nav-item">
-					<a href="{% url 'home' %}" class="nav-link">
-						<img src="{% static 'img/home_black.png' %}" alt="Home link icon">
-						<span class="link-text">Home</span>
-					</a>
-				</li>
-
-				<li class="nav-item">
-					<a href="{% url 'search' %}" class="nav-link">
-						<img src="{% static 'img/search_black.png' %}" alt="Search link icon">
-						<span class="link-text">Search</span>
-					</a>
-				</li>
-
-				<li class="nav-item">
-					<a href="/notifications" class="nav-link">
-						<img src="{% static 'img/bell_black.png' %}" alt="Notifications link icon">
-						<span class="link-text">Notifications</span>
-					</a>
-				</li>
-
-				<li class="nav-item">
-					<a href="/dms" class="nav-link">
-						<img src="{% static 'img/message_black.png' %}" alt="Messages link icon">
-						<span class="link-text">Messages</span>
-					</a>
-				</li>
-
-				<li class="nav-item">
-					<a href="{% url 'profile' request.user.id %}" class="nav-link">
-						<img src="{% static 'img/user_black.png' %}" alt="Profile link icon"> 
-						<span class="link-text">Profile</span>
-					</a>
-				</li>
-
-				<li class="nav-item theme-selectors">
-					<input type="image" id="moon" class="theme" src="{% static 'img/moon.png' %}" onclick="changetheme(this)"/>
-					<input type="image" id="sun" class="theme active" src="{% static 'img/sun.png' %}" onclick="changetheme(this)"/>
-				</li>
-			</ul>
-			
-			
-		</nav>
-
-		<main class="w-50 mx-auto">
+{% extends 'posts/base.html' %}
+{% block title %}@{{ user.username }} Profile, On Privalise{% endblock title %}
+{% block content %}
+<main class="w-50 mx-auto">
 			<section class="profile">
 				<div class="picture-container">
 					<img class="profile-picture" src="{{ user.profile.image.url }}">
@@ -125,7 +61,5 @@
 					</div>
 				</div>
 				{% endfor %}
-			</section>
-		</main>
-	</body>
-</html>
+			</section></main>
+{% endblock content %}
