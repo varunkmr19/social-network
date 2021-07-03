@@ -14,52 +14,23 @@ from django.urls import reverse_lazy
 from django.http import JsonResponse, HttpResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 import json
-'''
-class PostListView(LoginRequiredMixin, ListView):
-    model = Post 
-    # The Default Template -> <app-name>/<model>_<viewtype>.html
-    context_object_name = 'posts'
-    ordering = ['-date_posted']
-    paginate_by = 4
-'''
 class PostListView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         logged_in_user = request.user
-        posts = Post.objects.filter(
-            author__profile__followers__in=[logged_in_user.id]
-        ).order_by('-date_posted')
+        posts = Post.objects.filter(author__profile__followers__in=[logged_in_user.id]).order_by('-date_posted')
         form = PostForm()
-
-        context = {
-            'posts': posts,
-            'form': form,
-        }
-
+        context = {'posts': posts, 'form': form,}
         return render(request, 'posts/post_list.html', context)
-
     def post(self, request, *args, **kwargs):
         logged_in_user = request.user
-        posts = Post.objects.filter(
-            author__profile__followers__in=[logged_in_user.id]
-        ).order_by('-date_posted')
+        posts = Post.objects.filter(author__profile__followers__in=[logged_in_user.id]).order_by('-date_posted')
         form = PostForm(request.POST, request.FILES)
-
         if form.is_valid():
             new_post = form.save(commit=False)
             new_post.author = request.user
             new_post.save()
-
-        context = {
-            'posts': posts,
-            'form': form,
-        }
-
+        context = {'posts': posts, 'form': form,}
         return render(request, 'posts/post_list.html', context)
-
-
-
-
-
 @login_required
 def PostDetailView(request, pk):
     template_name = 'posts/post_detail.html'
@@ -78,24 +49,15 @@ def PostDetailView(request, pk):
             # Save the comment to the database
             new_comment.save() 
             # commentToJson = json.dumps(new_comment.toJson(), indent=4)
-            return JsonResponse({
-              'comment': new_comment.content,
-               'date_created': new_comment.date_created,
-               'author': new_comment.author.username
-            })
+            return JsonResponse({'comment': new_comment.content, 'date_created': new_comment.date_created, 'author': new_comment.author.username})
     else:
         comment_form = CommentForm()
-
-    return render(request, template_name, {'post': post,
-                                           'comments': comments,
-                                           'new_comment': new_comment,
-                                           'comment_form': comment_form})
+    return render(request, template_name, {'post': post,'comments': comments, 'new_comment': new_comment, 'comment_form': comment_form})
 '''
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     fields = ['content', 'image']
     context_object_name = 'content'
-
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
@@ -108,8 +70,7 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         post = self.get_object()
         if self.request.user == post.author:
             return True
-        return False
-        
+        return False    
 @login_required
 def settings(request):
      if request.method == 'POST':
@@ -123,10 +84,7 @@ def settings(request):
      else:
          u_form = UserUpdateForm(instance=request.user)
          p_form = ProfileUpdteForm(instance=request.user.profile)
-     context = {
-         'u_form': u_form,
-         'p_form': p_form
-     }
+     context = {'u_form': u_form, 'p_form': p_form}
      return render(request, 'posts/settings.html', context)
 class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Comment
@@ -134,26 +92,22 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def get_success_url(self):
         pk = self.kwargs['post_pk']
         return reverse_lazy('post-detail', kwargs={'pk': pk})
-
     def test_func(self):
         comment = self.get_object()
         if self.request.user == comment.author:
             return True
         return False
-
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     fields = ['content', 'image']
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
-    
     def test_func(self):
         post = self.get_object()
         if self.request.user == post.author:
             return True
         return False
-
 @login_required
 def settings(request):
     if request.method == 'POST':
@@ -167,10 +121,7 @@ def settings(request):
     else:
         u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdteForm(instance=request.user.profile)
-    context = {
-        'u_form': u_form,
-        'p_form': p_form
-    }
+    context = {'u_form': u_form, 'p_form': p_form}
     return render(request, 'posts/settings.html', context)
 class ProfileView(LoginRequiredMixin, View):
     def get(self, request, pk, *args, **kwargs):
@@ -187,83 +138,13 @@ class ProfileView(LoginRequiredMixin, View):
             else:
                 is_following = False
         followers_num = len(followers)
-
-        context = {
-        'user': user,
-        'profile': profile,
-        'posts': posts,
-        'followers_num': followers_num,
-        'is_following': is_following,
-        }
+        context = {'user': user, 'profile': profile, 'posts': posts, 'followers_num': followers_num, 'is_following': is_following,}
         return render(request, 'posts/profile.html', context)
- 
-
 class RemoveFollower(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         profile = Profile.objects.get(pk=pk)
         profile.followers.remove(request.user)
         return redirect('profile', pk=profile.pk)
-'''
-class AddLike(LoginRequiredMixin, View): 
-    def post(self, request, pk, *args, **kwargs):
-        post = Post.objects.get(pk=pk)
-        is_dislike = False
-        for dislike in post.dislikes.all():
-            if dislike == request.user:
-                is_dislike = True
-                break
-        if is_dislike:
-            post.dislikes.remove(request.user)   
-        is_like = False
-        for like in post.likes.all():
-            if like == request.user:
-                is_like = True
-                break
-        if not is_like:
-            post.likes.add(request.user)
-        if is_like:
-            post.likes.remove(request.user)
-        
-
-        next = request.POST.get("next", '/')
-        like_count = post.likes.all().count()
-        dislike_count = post.dislikes.all().count()
-        return JsonResponse({
-          'like_count': like_count,
-          'dislike_count': dislike_count
-        })
-        # return HttpResponse(response_data)
-        # return HttpResponseRedirect(next)
-
-class AddDislike(LoginRequiredMixin, View):
-    def post(self, request, pk, *args, **kwargs):
-        post = Post.objects.get(pk=pk)
-        is_like = False
-        for like in post.likes.all():
-            if like == request.user:
-                is_like = True
-                break
-        if is_like:
-            post.likes.remove(request.user)
-        is_dislike = False
-        for dislike in post.dislikes.all():
-            if dislike == request.user:
-                is_dislike = True
-                break
-        if not is_dislike:
-            post.dislikes.add(request.user)
-        if is_dislike:
-            post.dislikes.remove(request.user)
-        next = request.POST.get("next", '/')
-
-        like_count = post.likes.all().count()
-        dislike_count = post.dislikes.all().count()
-        return JsonResponse({
-          'like_count': like_count,
-          'dislike_count': dislike_count
-        })
-        # return HttpResponseRedirect(next)       
-'''     
 class Search(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         query = self.request.GET.get('query')
@@ -348,8 +229,34 @@ def AddDislike(request):
             post.like_count -= 1
             result = post.like_count
             post.save()
-
         return JsonResponse({'result': result, })
+'''
+@login_required
+def AddFollower(request):
+    if request.POST.get('action') == 'post':
+        result = ''
+        id = int(request.POST.get('userid'))
+        #user = get_object_or_404(Profile, id=id)
+        user = Profile.objects.get(pk=id)
+        is_following = False
+        for follower in user.followers.all():
+            if follower == request.user:
+                is_following = True
+                break
+        if is_following:
+            user.followers.remove(request.user)
+        if user.followers.filter(request.user).exists():
+            user.followers.remove(request.user)
+            user.followers_count -= 1
+            result = user.followers_count
+            user.save()
+        else:
+            user.followers.add(request.user)
+            user.followers_count += 1
+            result = user.followers_count
+            user.save()
+        return JsonResponse({'result': result, })
+'''
 @login_required
 def AddLike(request):
     if request.POST.get('action') == 'post':
@@ -374,10 +281,10 @@ def AddLike(request):
             post.like_count += 1
             result = post.like_count
             post.save()
-
         return JsonResponse({'result': result, })
 class AddFollower(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         profile = Profile.objects.get(pk=pk)
         profile.followers.add(request.user)
         return redirect('profile', pk=profile.pk)
+

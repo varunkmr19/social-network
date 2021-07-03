@@ -1,10 +1,11 @@
 {% extends 'posts/base.html' %}
 {% block content %}
-{% for post in posts %}
+
 <main class="content">
 	<div class="logo-text" style="margin-bottom: 1rem;">
         <div>Priva<span>Lise</span></div>
       </div>
+      {% for post in posts %}
 			<div class="post">
 				<div class="profile-container">
 					<img class="profile" src="{{ post.author.profile.image.url }}">

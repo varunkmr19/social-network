@@ -64,6 +64,13 @@
           </a>
         </li>
 
+        <li class="nav-item">
+          <a href="{% url 'logout' %}" class="nav-link">
+            <img src="{% static 'img/logout_black.png' %}" alt="Logout button">
+            <span class="link-text">Log out</span>
+          </a>
+        </li>
+
         <li class="nav-item theme-selectors">
           <input type="image" id="moon" class="theme" src="{% static 'img/moon.png' %}" onclick="changetheme(this)"/>
           <input type="image" id="sun" class="theme active" src="{% static 'img/sun.png' %}" onclick="changetheme(this)"/>
@@ -164,6 +171,27 @@
       }
     });
   })
+</script>
+<script>/*
+  $(document).on('click', '#follow-button', function (e) {
+    e.preventDefault();
+    $.ajax({
+      type: 'POST',
+      url: '{% url "add-follower" %}',
+      data: {
+        userid: $('#follow-button').val(),
+        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+        action: 'post'
+      },
+      success: function (json) {
+        document.getElementById("followers_count").innerHTML = json['result']
+        console.log(json)
+      },
+      error: function (xhr, errmsg, err) {
+
+      }
+    });
+  })*/
 </script>
   </body>
 </html>
