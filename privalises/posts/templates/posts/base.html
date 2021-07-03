@@ -144,6 +144,26 @@
     });
   })
 </script>
-    
+     <script>
+  $(document).on('click', '#dislike-button', function (e) {
+    e.preventDefault();
+    $.ajax({
+      type: 'POST',
+      url: '{% url "add-dislike" %}',
+      data: {
+        postid: $('#dislike-button').val(),
+        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+        action: 'post'
+      },
+      success: function (json) {
+        document.getElementById("like_count").innerHTML = json['result']
+        console.log(json)
+      },
+      error: function (xhr, errmsg, err) {
+
+      }
+    });
+  })
+</script>
   </body>
 </html>

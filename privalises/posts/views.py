@@ -340,13 +340,47 @@ class CommentReply(LoginRequiredMixin, View):
 
 
 
-
 @ login_required
+def AddDislike(request):
+    if request.POST.get('action') == 'post':
+        result = ''
+
+        id = int(request.POST.get('postid'))
+        post = get_object_or_404(Post, id=id)
+        is_like = False
+        for like in post.likes.all():
+            if like == request.user:
+                is_like = True
+                break
+        if is_like:
+            post.likes.remove(request.user)
+        is_dislike = False
+        if post.dislikes.filter(id=request.user.id).exists():
+            post.dislikes.remove(request.user)
+            post.like_count += 1
+            result = post.like_count
+            post.save()
+        else:
+            post.dislikes.add(request.user)
+            post.like_count -= 1
+            result = post.like_count
+            post.save()
+
+        return JsonResponse({'result': result, })
+@login_required
 def AddLike(request):
     if request.POST.get('action') == 'post':
         result = ''
         id = int(request.POST.get('postid'))
         post = get_object_or_404(Post, id=id)
+        is_dislike = False
+        for dislike in post.dislikes.all():
+            if dislike == request.user:
+                is_dislike = True
+                break
+        if is_dislike:
+            post.dislikes.remove(request.user)   
+        is_like = False
         if post.likes.filter(id=request.user.id).exists():
             post.likes.remove(request.user)
             post.like_count -= 1

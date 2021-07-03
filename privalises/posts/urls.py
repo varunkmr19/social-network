@@ -16,7 +16,7 @@ urlpatterns = [
     path('post/remove/comment/like/<int:post_pk>/<int:pk>', AddCommentLike.as_view(), name='add-comment-like'),
     path('post/add/comment/like/<int:post_pk>/<int:pk>', AddCommentDislike.as_view(), name='add-comment-dislike'),
     path('post/add/comment/reply/<int:post_pk>/<int:pk>', CommentReply.as_view(), name='add-comment-reply'),
-    path('post/remove/like/<int:pk>', AddDislike.as_view(), name='add-dislike'),
+    path('post/remove/like/', AddDislike, name='add-dislike'),
     path('search/', Search.as_view(), name='search'),
 
 ]
