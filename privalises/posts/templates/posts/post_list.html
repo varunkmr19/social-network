@@ -5,6 +5,11 @@
 	<div class="logo-text" style="margin-bottom: 1rem;">
         <div>Priva<span>Lise</span></div>
       </div>
+      {% if messages %}
+       {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} content">{{ message }}</div>
+       {% endfor %}
+      {% endif %}
       {% for post in posts %}
 			<div class="post">
 				<div class="profile-container">
@@ -46,6 +51,7 @@
 						</div>
 
 						<button class="social_button reply">Comment</button>
+						<button class="" type="submit"><i class="fas fa-bookmark"><a href="{% url 'add-fav' post.id %}"></i> Markalise It :D</a></button>
 					</div>
 
 					<div class="reply_accordion">

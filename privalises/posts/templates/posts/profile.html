@@ -21,9 +21,10 @@
               <br/><br/>
             {% else %}
               {% if is_following == False %}
-                 <form method="POST" action='{% url "add-follower" profile.id %}'>
+                 <form method="POST">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-outline-danger">Follow
+                    <button type="submit" id="follow-button" 
+                    value="{{ user.id }}" class="btn btn-outline-danger">Follow
 			            </button>
 			         </form>
 			         <br/><br/>

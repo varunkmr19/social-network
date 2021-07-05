@@ -230,33 +230,30 @@ def AddDislike(request):
             result = post.like_count
             post.save()
         return JsonResponse({'result': result, })
-'''
 @login_required
 def AddFollower(request):
-    if request.POST.get('action') == 'post':
-        result = ''
-        id = int(request.POST.get('userid'))
-        #user = get_object_or_404(Profile, id=id)
-        user = Profile.objects.get(pk=id)
-        is_following = False
-        for follower in user.followers.all():
-            if follower == request.user:
-                is_following = True
-                break
-        if is_following:
-            user.followers.remove(request.user)
-        if user.followers.filter(request.user).exists():
-            user.followers.remove(request.user)
-            user.followers_count -= 1
-            result = user.followers_count
-            user.save()
-        else:
-            user.followers.add(request.user)
-            user.followers_count += 1
-            result = user.followers_count
-            user.save()
-        return JsonResponse({'result': result, })
-'''
+    result = ''
+    id = int(request.POST.get('userid'))
+    #user = get_object_or_404(Profile, id=id)
+    user = Profile.objects.get(pk=id)
+    is_following = False
+    for follower in user.followers:
+        if follower == request.user:
+            is_following = True
+            break
+    if is_following:
+        user.followers.remove(request.user)
+    if user.followers.filter(request.user).exists():
+        user.followers.remove(request.user)
+        user.followers_count -= 1
+        result = user.followers_count
+        user.save()
+    else:
+        user.followers.add(request.user)
+        user.followers_count += 1
+        result = user.followers_count
+        user.save()
+    return JsonResponse({'result': result, })
 @login_required
 def AddLike(request):
     if request.POST.get('action') == 'post':
@@ -282,9 +279,27 @@ def AddLike(request):
             result = post.like_count
             post.save()
         return JsonResponse({'result': result, })
+
+@login_required
+def FavouritesList(request):
+    new = Post.newmanager.filter(favourites=request.user)
+    return render(request, 'accounts/favourites.html', {'new': new})
+@login_required
+def AddFavourites(request, id):
+    post = get_object_or_404(Post, id=id)
+    if post.favourites.filter(id=request.user.id).exists():
+        post.favourites.remove(request.user)
+        messages.success(request, f'Post Is UnMarkaLised :( Maybe It\'s For The Better')
+    else:
+        post.favourites.add(request.user)
+        messages.success(request, f'Post Is MarkaLised! Amazing :D')
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
+'''
 class AddFollower(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         profile = Profile.objects.get(pk=pk)
         profile.followers.add(request.user)
         return redirect('profile', pk=profile.pk)
 
+'''
