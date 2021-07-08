@@ -29,6 +29,7 @@ class PostListView(LoginRequiredMixin, View):
             new_post = form.save(commit=False)
             new_post.author = request.user
             new_post.save()
+            new_post.create_tags()
         context = {'posts': posts, 'form': form,}
         return render(request, 'posts/post_list.html', context)
 @login_required
@@ -47,7 +48,8 @@ def PostDetailView(request, pk):
             new_comment.author = User.objects.get(pk=request.user.id)
             new_comment.post = post
             # Save the comment to the database
-            new_comment.save() 
+            new_comment.save()
+            new_comment.create_tags()
             # commentToJson = json.dumps(new_comment.toJson(), indent=4)
             return JsonResponse({'comment': new_comment.content, 'date_created': new_comment.date_created, 'author': new_comment.author.username})
     else:

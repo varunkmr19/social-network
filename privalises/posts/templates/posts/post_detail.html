@@ -13,7 +13,7 @@
         <a href="{% url 'post-delete' post.id %}" class='btn btn-outline-danger mb-1'>Delete</a>
       {% endif %}
         </div>
-        <div class='article-content detailed'>
+        <div class='article-content detailed tags-id'>
         <p class='media'>{{ post.content }}</p>
            {% if post.image %}
                   <img src="{{ post.image.url }}" class="post-image" />
