@@ -6,7 +6,6 @@ from PIL import Image
 import json
 
 class Post(models.Model):
-    shared_body = models.TextField(blank=True, null=True)
     image = models.ImageField(blank=True, null=True, upload_to='post_image')
     content = models.TextField()
     date_posted = models.DateTimeField(auto_now_add=True)
@@ -20,7 +19,7 @@ class Post(models.Model):
     like_count = models.BigIntegerField(default='0')
     tags = models.ManyToManyField('Tag', blank=True)
     def create_tags(self):
-        for word in self.body.split():
+        for word in self.content.split():
             if (word[0] == '#'):
                 tag = Tag.objects.filter(name=word[1:]).first()
                 if tag:
@@ -57,7 +56,7 @@ class Comment(models.Model):
     dislikes = models.ManyToManyField(User, blank=True, related_name='comment_dislikes')
     parent = models.ForeignKey('self', blank=True, on_delete=models.CASCADE, null=True, related_name='+')
     def create_tags(self):
-        for word in self.comment.split():
+        for word in self.content.split():
             if (word[0] == '#'):
                 tag = Tag.objects.get(name=word[1:])
                 if tag:
