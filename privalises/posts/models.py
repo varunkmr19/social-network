@@ -2,7 +2,8 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
-from PIL import Image
+#from PIL import Image
+import PIL.Image
 import json
 
 class Post(models.Model):
@@ -18,6 +19,7 @@ class Post(models.Model):
     likes = models.ManyToManyField(User, related_name='like', default=None, blank=True)
     like_count = models.BigIntegerField(default='0')
     tags = models.ManyToManyField('Tag', blank=True)
+    mentions = models.ManyToManyField(User, related_name='mentions', blank=True)
     def create_tags(self):
         for word in self.content.split():
             if (word[0] == '#'):
@@ -88,11 +90,12 @@ class Profile(models.Model):
     followers = models.ManyToManyField(User, blank=True, related_name='followers')
     verified = models.BooleanField(default=False)
     followers_count = models.BigIntegerField(default='0')
+    mention_count = models.BigIntegerField(default='0')
     def __str__(self):
         return f'{self.user.username} Profile'
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        img = Image.open(self.image.path)
+        img = PIL.Image.open(self.image.path)
         if img.height > 300 or img.width > 300:
             output_size = (300, 300)
             img.thumbnail(output_size)
@@ -115,3 +118,13 @@ class Notification(models.Model):
     comment = models.ForeignKey('Comment', on_delete=models.CASCADE, related_name='+', blank=True, null=True)
     date = models.DateTimeField(default=timezone.now)
     user_has_seen = models.BooleanField(default=False)
+
+'''
+class Hashtag(models.Model):
+    title = models.CharField(max_length=255, blank=True, null=True, unique=True)
+    posts = models.ManyToManyField(Post)
+    date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.title
+'''
