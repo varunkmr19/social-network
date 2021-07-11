@@ -178,7 +178,7 @@ class AddCommentLike(LoginRequiredMixin, View):
         if not is_like:
             comment.likes.add(request.user)
         if is_like:
-            post.likes.remove(request.user)
+            comment.likes.remove(request.user)
         next = request.POST.get("next", '/')
         return HttpResponseRedirect(next)
 class AddCommentDislike(LoginRequiredMixin, View):

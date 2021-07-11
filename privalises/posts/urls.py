@@ -1,7 +1,7 @@
 from django.urls import path
 #from django.conf import settings
 #from django.conf.urls.static import static
-from .views import AddFavourites, AddLike, AddDislike, Search, AddCommentLike, AddCommentDislike, CommentReply, ProfileView, get_profile_view_by_username, settings, AddFollower, RemoveFollower,PostListView, PostDetailView, PostUpdateView, PostDeleteView, CommentDeleteView, PostCreateView
+from .views import AddFavourites, AddLike, AddDislike, Search, AddCommentLike, AddCommentDislike, CommentReply, ProfileView, get_profile_view_by_username, settings, AddFollower, RemoveFollower,PostListView, PostDetailView, PostUpdateView, PostDeleteView, CommentDeleteView
 urlpatterns = [
     path('', PostListView.as_view(), name='home'),
     path('post/<int:pk>/', PostDetailView, name='post-detail'),
